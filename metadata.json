@@ -1,0 +1,8 @@
+{
+  "name": "99 Cuidar",
+  "description": "A premium platform from 99 Cuidar for professional caregivers, featuring AI-powered matching, integrated payments, geolocation, and advanced analytics to connect caregivers with families in need.",
+  "requestFramePermissions": [
+    "geolocation",
+    "camera"
+  ]
+}
