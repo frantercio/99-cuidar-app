@@ -9,7 +9,9 @@ interface AvatarProps {
 }
 
 const Avatar: React.FC<AvatarProps> = ({ photo, name, className, textClassName }) => {
-    const isUrl = photo.startsWith('blob:') || photo.startsWith('http');
+    // FIX: Adicionado check para 'data:' para suportar imagens em Base64 (uploads locais)
+    const isUrl = photo.startsWith('blob:') || photo.startsWith('http') || photo.startsWith('data:');
+    
     // Basic emoji check - will not match all, but good for this case.
     const isEmoji = !isUrl && /\p{Emoji}/u.test(photo);
 
@@ -25,7 +27,7 @@ const Avatar: React.FC<AvatarProps> = ({ photo, name, className, textClassName }
     
     // For emojis or initials, we need a container.
     return (
-        <div className={`w-full h-full flex items-center justify-center ${className}`}>
+        <div className={`w-full h-full flex items-center justify-center ${className} bg-gray-200 dark:bg-gray-700 text-gray-500`}>
              {isEmoji ? (
                  <span role="img" aria-label={name} className={textClassName}>{photo}</span>
              ) : (

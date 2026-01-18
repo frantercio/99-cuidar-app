@@ -10,6 +10,7 @@ import CancelConfirmationModal from './CancelConfirmationModal';
 import EditAppointmentModal from './EditAppointmentModal';
 import CareLogViewerModal from './CareLogViewerModal';
 import WalletPage from './WalletPage';
+import SupportTicketModal from './SupportTicketModal';
 
 const ClientDashboardPage: React.FC = () => {
     const { currentUser, appointments, navigate, viewProfile, caregivers, cancelAppointment } = useAppStore();
@@ -19,6 +20,7 @@ const ClientDashboardPage: React.FC = () => {
     const [cancellingAppointment, setCancellingAppointment] = useState<Appointment | null>(null);
     const [editingAppointment, setEditingAppointment] = useState<Appointment | null>(null);
     const [viewingLogAppointment, setViewingLogAppointment] = useState<Appointment | null>(null);
+    const [isSupportModalOpen, setIsSupportModalOpen] = useState(false);
 
     const user = currentUser as Client;
 
@@ -183,14 +185,25 @@ const ClientDashboardPage: React.FC = () => {
         <>
             <div className="pt-20 min-h-screen bg-gray-50 dark:bg-gray-900">
                 <div className="container mx-auto px-6 py-8">
-                    <div className="bg-white dark:bg-gray-800 p-8 rounded-3xl mb-8 shadow-lg flex items-center gap-6 animate-scale-in">
-                        <div className="w-24 h-24 rounded-2xl overflow-hidden ring-4 ring-indigo-200 dark:ring-indigo-800 flex-shrink-0">
-                           <Avatar photo={user.photo} name={user.name} className="w-full h-full" textClassName="text-5xl" />
+                    <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+                        <div className="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-lg flex items-center gap-6 animate-scale-in flex-grow w-full">
+                            <div className="w-24 h-24 rounded-2xl overflow-hidden ring-4 ring-indigo-200 dark:ring-indigo-800 flex-shrink-0">
+                               <Avatar photo={user.photo} name={user.name} className="w-full h-full" textClassName="text-5xl" />
+                            </div>
+                            <div className="flex-grow">
+                                <h1 className="text-3xl font-bold text-gray-800 dark:text-white">{user.name}</h1>
+                                <p className="text-lg text-gray-600 dark:text-gray-400">Painel do Cliente</p>
+                            </div>
                         </div>
-                        <div className="flex-grow">
-                            <h1 className="text-3xl font-bold text-gray-800 dark:text-white">{user.name}</h1>
-                            <p className="text-lg text-gray-600 dark:text-gray-400">Painel do Cliente</p>
-                        </div>
+                        <button 
+                            onClick={() => setIsSupportModalOpen(true)}
+                            className="bg-white dark:bg-gray-800 p-6 rounded-3xl shadow-lg flex flex-col items-center justify-center gap-2 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors w-full md:w-auto min-w-[150px]"
+                        >
+                            <div className="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center">
+                                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" /></svg>
+                            </div>
+                            <span className="font-semibold text-gray-700 dark:text-gray-300">Ajuda</span>
+                        </button>
                     </div>
 
                     <div className="mb-8">
@@ -246,6 +259,9 @@ const ClientDashboardPage: React.FC = () => {
                     appointment={viewingLogAppointment}
                     onClose={() => setViewingLogAppointment(null)}
                 />
+            )}
+            {isSupportModalOpen && (
+                <SupportTicketModal onClose={() => setIsSupportModalOpen(false)} />
             )}
         </>
     );

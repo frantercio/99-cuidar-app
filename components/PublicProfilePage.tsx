@@ -11,7 +11,7 @@ interface PublicProfilePageProps {
 
 const SocialIcon: React.FC<{ platform: string, url: string }> = ({ platform, url }) => {
     const icons: { [key: string]: React.ReactNode } = {
-        instagram: <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fillRule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.024.06 1.378.06 3.808s-.012 2.784-.06 3.808c-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.024.048-1.378.06-3.808.06s-2.784-.012-3.808-.06c-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.048-1.024-.06-1.378-.06-3.808s.012-2.784.06-3.808c.049-1.064.218 1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 016.08 2.525c.636-.247 1.363-.416 2.427-.465C9.53 2.013 9.884 2 12.315 2zM12 7a5 5 0 100 10 5 5 0 000-10zm0 8a3 3 0 110-6 3 3 0 010 6zm5.75-9.25a1.25 1.25 0 100-2.5 1.25 1.25 0 000 2.5z" clipRule="evenodd" /></svg>,
+        instagram: <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fillRule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.024.06 1.378.06 3.808s-.012 2.784-.06 3.808c-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.024.048-1.378.06-3.808.06s-2.784-.012-3.808-.06c-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 011.153-1.772A4.902 4.902 0 016.08 2.525c.636-.247 1.363-.416 2.427-.465C9.53 2.013 9.884 2 12.315 2zM12 7a5 5 0 100 10 5 5 0 000-10zm0 8a3 3 0 110-6 3 3 0 010 6zm5.75-9.25a1.25 1.25 0 100-2.5 1.25 1.25 0 000 2.5z" clipRule="evenodd" /></svg>,
         facebook: <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fillRule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clipRule="evenodd" /></svg>,
         linkedin: <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>,
         whatsapp: <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.487 5.235 3.487 8.413.003 6.557-5.338 11.892-11.894 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.885-.002 2.024.63 3.965 1.739 5.625l-1.134 4.135 4.27-1.12z"/></svg>,
@@ -30,6 +30,7 @@ const PublicProfilePage: React.FC<PublicProfilePageProps> = ({ caregiver }) => {
     const isOwner = currentUser?.id === caregiver.id;
     const isClient = currentUser?.role === 'client';
     const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
+    const [bookingDate, setBookingDate] = useState<Date | null>(null);
     const [isServicesExpanded, setIsServicesExpanded] = useState(false);
     const [currentDate, setCurrentDate] = useState(new Date());
 
@@ -56,7 +57,7 @@ const PublicProfilePage: React.FC<PublicProfilePageProps> = ({ caregiver }) => {
         }
     };
 
-    const handleOpenBookingModal = () => {
+    const handleOpenBookingModal = (date?: Date) => {
         if (!currentUser) {
             addAlert("Você precisa fazer login para agendar um serviço.", "info");
             navigate('login');
@@ -65,6 +66,11 @@ const PublicProfilePage: React.FC<PublicProfilePageProps> = ({ caregiver }) => {
         if (currentUser.role === 'caregiver') {
             addAlert("Cuidadores não podem agendar serviços. Por favor, acesse com uma conta de cliente.", "error");
             return;
+        }
+        if (date) {
+            setBookingDate(date);
+        } else {
+            setBookingDate(null);
         }
         setIsBookingModalOpen(true);
     };
@@ -114,23 +120,39 @@ const PublicProfilePage: React.FC<PublicProfilePageProps> = ({ caregiver }) => {
             const isToday = date.toDateString() === today.toDateString();
             const isUnavailable = unavailableDatesSet.has(dateString);
 
-            let dayClasses = 'w-10 h-10 rounded-full flex items-center justify-center font-semibold transition-colors duration-200 ';
+            let dayClasses = 'w-10 h-10 rounded-full flex items-center justify-center font-semibold transition-all duration-200 text-sm ';
+            let isDisabled = false;
 
             if (isPast) {
-                dayClasses += 'text-gray-400 dark:text-gray-500 cursor-not-allowed opacity-75';
+                dayClasses += 'text-gray-400 dark:text-gray-600 cursor-not-allowed opacity-50';
+                isDisabled = true;
             } else if (isUnavailable) {
-                dayClasses += 'bg-red-100 dark:bg-red-900/50 text-red-600 dark:text-red-400 cursor-not-allowed opacity-75';
+                dayClasses += 'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 cursor-not-allowed opacity-75';
+                isDisabled = true;
             } else if (isToday) {
-                dayClasses += 'bg-indigo-600 text-white ring-2 ring-offset-2 ring-indigo-500 dark:ring-offset-gray-800';
+                dayClasses += 'bg-indigo-600 text-white ring-4 ring-indigo-100 dark:ring-indigo-900 shadow-lg transform scale-110 hover:bg-indigo-700 cursor-pointer';
             } else {
-                dayClasses += 'bg-green-100 dark:bg-green-800/50 text-green-800 dark:text-green-300';
+                dayClasses += 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 hover:bg-green-200 dark:hover:bg-green-800 hover:scale-110 cursor-pointer';
             }
 
-            calendarDays.push(
-                <div key={day} className={dayClasses}>
-                    {day}
-                </div>
-            );
+            if (isDisabled) {
+                calendarDays.push(
+                    <div key={day} className={dayClasses}>
+                        {day}
+                    </div>
+                );
+            } else {
+                calendarDays.push(
+                    <button 
+                        key={day} 
+                        className={dayClasses}
+                        onClick={() => handleOpenBookingModal(date)}
+                        title="Clique para agendar"
+                    >
+                        {day}
+                    </button>
+                );
+            }
         }
         return calendarDays;
     };
@@ -148,7 +170,7 @@ const PublicProfilePage: React.FC<PublicProfilePageProps> = ({ caregiver }) => {
                 <span className="flex items-center text-gray-700 dark:text-gray-300">
                     {isCompleted && <svg className="w-6 h-6 mr-3 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg>}
                     {isPending && <svg className="w-6 h-6 mr-3 text-yellow-500 animate-spin-slow" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" /></svg>}
-                     {isNotAvailable && <svg className="w-6 h-6 mr-3 text-gray-400" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 00-1.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" /></svg>}
+                     {isNotAvailable && <svg className="w-6 h-6 mr-3 text-gray-400" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" /></svg>}
                     {label}
                 </span>
                  <span className={`font-bold ${isCompleted ? 'text-green-600 dark:text-green-400' : isPending ? 'text-yellow-600 dark:text-yellow-400' : 'text-gray-500'}`}>
@@ -278,7 +300,7 @@ const PublicProfilePage: React.FC<PublicProfilePageProps> = ({ caregiver }) => {
                                     </div>
                                     {!isOwner && (
                                         <>
-                                            <button onClick={handleOpenBookingModal} disabled={inVacationMode} className="mt-6 w-full btn-gradient text-white font-bold py-4 px-8 rounded-2xl text-xl shadow-lg transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed">
+                                            <button onClick={() => handleOpenBookingModal()} disabled={inVacationMode} className="mt-6 w-full btn-gradient text-white font-bold py-4 px-8 rounded-2xl text-xl shadow-lg transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed">
                                                 Agendar Serviço
                                             </button>
                                             {isClient && (
@@ -337,22 +359,41 @@ const PublicProfilePage: React.FC<PublicProfilePageProps> = ({ caregiver }) => {
                             </div>
                              {/* Calendar */}
                              <div className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-lg">
-                                <h3 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">Disponibilidade</h3>
+                                <h3 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">Disponibilidade em Tempo Real</h3>
+                                
+                                {/* Time Slots Legend Block */}
+                                <div className="mb-6 p-4 bg-gray-50 dark:bg-gray-900/50 rounded-xl border border-gray-100 dark:border-gray-700">
+                                    <h4 className="font-semibold text-gray-700 dark:text-gray-300 mb-3 text-sm">Horários de Atendimento Típicos:</h4>
+                                    <div className="flex flex-wrap gap-2">
+                                        <span className="px-3 py-1 bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-300 rounded-lg text-xs font-bold flex items-center">
+                                            ☀️ Manhã (07h - 12h)
+                                        </span>
+                                        <span className="px-3 py-1 bg-orange-100 text-orange-800 dark:bg-orange-900/50 dark:text-orange-300 rounded-lg text-xs font-bold flex items-center">
+                                            🌤️ Tarde (13h - 18h)
+                                        </span>
+                                        <span className="px-3 py-1 bg-indigo-100 text-indigo-800 dark:bg-indigo-900/50 dark:text-indigo-300 rounded-lg text-xs font-bold flex items-center">
+                                            🌙 Noite (19h - 22h)
+                                        </span>
+                                    </div>
+                                </div>
+
                                  <div className="flex justify-between items-center mb-4">
                                      <button onClick={handlePrevMonth} aria-label="Previous month" className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"><svg className="w-6 h-6 text-gray-500" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" /></svg></button>
                                     <h4 className="text-lg font-semibold text-gray-700 dark:text-gray-300 capitalize">{currentDate.toLocaleString('pt-BR', { month: 'long', year: 'numeric' })}</h4>
                                     <button onClick={handleNextMonth} aria-label="Next month" className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"><svg className="w-6 h-6 text-gray-500" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" /></svg></button>
                                 </div>
-                                <div className="grid grid-cols-7 gap-y-2 text-center text-sm text-gray-500 mb-2">
+                                <div className="grid grid-cols-7 gap-y-2 text-center text-sm text-gray-500 mb-2 font-bold">
                                     {['D', 'S', 'T', 'Q', 'Q', 'S', 'S'].map((day, i) => <div key={i}>{day}</div>)}
                                 </div>
                                 <div className="grid grid-cols-7 gap-y-2 place-items-center">
                                     {renderCalendar()}
                                 </div>
-                                <div className="flex items-center justify-center gap-6 mt-6 text-sm">
-                                    <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-green-200"></div> Disponível</div>
-                                    <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-red-200"></div> Indisponível</div>
+                                <div className="flex items-center justify-center gap-4 mt-6 text-xs sm:text-sm flex-wrap">
+                                    <div className="flex items-center gap-1.5"><div className="w-3 h-3 rounded-full bg-green-200 border border-green-300"></div> Disponível</div>
+                                    <div className="flex items-center gap-1.5"><div className="w-3 h-3 rounded-full bg-red-200 border border-red-300"></div> Indisponível</div>
+                                    <div className="flex items-center gap-1.5"><div className="w-3 h-3 rounded-full bg-indigo-600 border border-indigo-700"></div> Hoje</div>
                                 </div>
+                                <p className="text-center text-xs text-gray-500 mt-4 italic">Selecione um dia disponível (verde) para iniciar o agendamento.</p>
                             </div>
                         </div>
 
@@ -379,7 +420,7 @@ const PublicProfilePage: React.FC<PublicProfilePageProps> = ({ caregiver }) => {
                              {/* Reviews */}
                              <div className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-lg">
                                 <h3 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">Avaliações de Clientes</h3>
-                                 <div className="space-y-6 max-h-96 overflow-y-auto pr-2">
+                                 <div className="space-y-6 max-h-96 overflow-y-auto pr-2 custom-scrollbar">
                                     {caregiver.reviews.length > 0 ? caregiver.reviews.map(review => (
                                         <div key={review.id} className="border-b border-gray-100 dark:border-gray-700 pb-4 last:border-0 last:pb-0">
                                             <div className="flex items-start gap-4">
@@ -403,7 +444,7 @@ const PublicProfilePage: React.FC<PublicProfilePageProps> = ({ caregiver }) => {
                     </div>
                 </div>
             </div>
-            {isBookingModalOpen && <BookingModal caregiver={caregiver} onClose={() => setIsBookingModalOpen(false)} />}
+            {isBookingModalOpen && <BookingModal caregiver={caregiver} onClose={() => setIsBookingModalOpen(false)} initialDate={bookingDate} />}
         </>
     );
 };

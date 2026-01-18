@@ -16,8 +16,15 @@ const getFromStorage = <T>(key: string, defaultValue: T): T => {
 const saveToStorage = <T>(key: string, value: T) => {
     try {
         window.localStorage.setItem(key, JSON.stringify(value));
-    } catch (error) {
-        console.error(`Error writing to localStorage key “${key}”:`, error);
+    } catch (error: any) {
+        // Handle QuotaExceededError specifically
+        if (error.name === 'QuotaExceededError' || error.code === 22 || error.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+            console.warn(`LocalStorage quota exceeded for key "${key}". Data will not be persisted across reloads.`);
+            // Optional: You could try to clear less critical data here, e.g., logs or old notifications
+            // window.localStorage.removeItem('auditLogs'); 
+        } else {
+            console.error(`Error writing to localStorage key “${key}”:`, error);
+        }
     }
 };
 
@@ -515,7 +522,6 @@ export const handleMockRequest = async (input: RequestInfo | URL, init?: Request
          saveToStorage('notifications', [newNotification, ...notifications]);
 
          // SIMULATE AUTO-REPLY (Demo feature)
-         // We trigger a timeout to simulate the other person "seeing" and "typing"
          setTimeout(() => {
              // 1. Simula leitura da mensagem pelo outro usuário
              let currentConversations = getFromStorage<Conversation[]>('conversations', []);
@@ -611,6 +617,20 @@ export const handleMockRequest = async (input: RequestInfo | URL, init?: Request
         const log = careLogs.find(l => l.appointmentId === appointmentId);
         if (!log) return jsonResponse({ error: 'Log not found' }, 404);
         return jsonResponse(log);
+    }
+
+    // --- SUPPORT TICKETS ---
+    if (url === '/api/tickets' && method === 'POST') {
+        const ticketData = body;
+        const tickets = getFromStorage<SupportTicket[]>('tickets', []);
+        const newTicket: SupportTicket = { 
+            ...ticketData, 
+            id: Date.now(), 
+            date: new Date().toISOString(), 
+            status: 'open' 
+        };
+        saveToStorage('tickets', [newTicket, ...tickets]);
+        return jsonResponse(newTicket, 201);
     }
 
     const resolveTicketMatch = url.match(/^\/api\/tickets\/(\d+)\/resolve$/);

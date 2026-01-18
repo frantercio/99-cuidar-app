@@ -47,7 +47,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose, user, onNaviga
                 </div>
                 <div className="p-6 flex flex-col space-y-4">
                     <button onClick={() => handleMobileNav('home')} className="text-lg text-left text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 font-medium transition-colors">Início</button>
-                    <button onClick={() => handleMobileNav('marketplace')} className="text-lg text-left text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 font-medium transition-colors">Cuidadores</button>
+                    <button onClick={() => handleMobileNav('systemInfo')} className="text-lg text-left text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 font-medium transition-colors">Como Funciona</button>
                     <div className="border-t border-gray-200 dark:border-gray-700 pt-4 space-y-4">
                     {user ? (
                         <>
@@ -72,11 +72,36 @@ const Navbar: React.FC<NavbarProps> = ({ user, onNavigate, onLogout }) => {
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [notificationsOpen, setNotificationsOpen] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [isDarkMode, setIsDarkMode] = useState(false);
     
     const dropdownRef = useRef<HTMLDivElement>(null);
     const notificationsRef = useRef<HTMLDivElement>(null);
 
     const unreadCount = notifications.filter(n => !n.read).length;
+
+    useEffect(() => {
+        // Initial Check from localStorage or System Preference
+        const storedTheme = localStorage.getItem('theme');
+        if (storedTheme === 'dark' || (!storedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            setIsDarkMode(true);
+            document.documentElement.classList.add('dark');
+        } else {
+            setIsDarkMode(false);
+            document.documentElement.classList.remove('dark');
+        }
+    }, []);
+
+    const toggleTheme = () => {
+        if (isDarkMode) {
+            document.documentElement.classList.remove('dark');
+            localStorage.setItem('theme', 'light');
+            setIsDarkMode(false);
+        } else {
+            document.documentElement.classList.add('dark');
+            localStorage.setItem('theme', 'dark');
+            setIsDarkMode(true);
+        }
+    };
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -109,22 +134,26 @@ const Navbar: React.FC<NavbarProps> = ({ user, onNavigate, onLogout }) => {
 
     return (
         <>
-            <nav className="navbar-blur shadow-lg fixed w-full top-0 z-50">
-                <div className="container mx-auto px-6 py-4">
+            <nav className="navbar-blur shadow-lg fixed w-full top-0 z-50 transition-colors duration-300">
+                <div className="container mx-auto px-6 py-3">
                     <div className="flex justify-between items-center">
-                        <button onClick={() => onNavigate('home')} className="flex items-center space-x-4">
-                            <div className="relative">
-                                <div className="w-12 h-12 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg text-2xl">
-                                    {systemSettings.logo.startsWith('http') ? 
-                                        <img src={systemSettings.logo} alt="Logo" className="w-full h-full object-cover rounded-xl"/> : 
-                                        <span role="img" aria-label="Logo">{systemSettings.logo}</span>
-                                    }
+                        <button onClick={() => onNavigate('home')} className="flex items-center gap-3 group">
+                            <div className="relative overflow-hidden w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 shadow-lg flex items-center justify-center transform transition-transform duration-300 group-hover:scale-105 group-hover:rotate-3">
+                                <svg className="w-7 h-7 text-white drop-shadow-md z-10" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
+                                </svg>
+                                {/* Medical Cross Overlay Effect */}
+                                <div className="absolute inset-0 flex items-center justify-center opacity-20 text-white">
+                                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="4"><path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
                                 </div>
-                                <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-400 rounded-full animate-pulse"></div>
+                                {/* Shine Effect */}
+                                <div className="absolute top-0 -left-[100%] w-full h-full bg-gradient-to-r from-transparent via-white/30 to-transparent transform skew-x-12 transition-all duration-700 group-hover:left-[100%]"></div>
                             </div>
-                            <div className="text-left">
-                                <h1 className="text-2xl font-bold text-gradient">{systemSettings.appName}</h1>
-                                <p className="text-xs text-gray-500 dark:text-gray-400">Cuidado e Tecnologia</p>
+                            <div className="text-left flex flex-col justify-center">
+                                <h1 className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400 tracking-tight leading-none">
+                                    {systemSettings.appName}
+                                </h1>
+                                <p className="text-xs text-gray-500 dark:text-gray-400 font-medium tracking-wide">Cuidado & Tecnologia</p>
                             </div>
                         </button>
                         
@@ -134,9 +163,22 @@ const Navbar: React.FC<NavbarProps> = ({ user, onNavigate, onLogout }) => {
                                 Início
                                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-indigo-600 transition-all duration-300 group-hover:w-full"></span>
                             </button>
-                            <button onClick={() => onNavigate('marketplace')} className="text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 font-medium transition-colors relative group">
-                                Cuidadores
+                            <button onClick={() => onNavigate('systemInfo')} className="text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 font-medium transition-colors relative group">
+                                Como Funciona
                                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-indigo-600 transition-all duration-300 group-hover:w-full"></span>
+                            </button>
+                            
+                            {/* Theme Toggle */}
+                            <button 
+                                onClick={toggleTheme} 
+                                className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-colors"
+                                aria-label="Toggle Dark Mode"
+                            >
+                                {isDarkMode ? (
+                                    <svg className="w-6 h-6 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clipRule="evenodd" /></svg>
+                                ) : (
+                                    <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" /></svg>
+                                )}
                             </button>
                             
                             {user ? (
@@ -201,7 +243,17 @@ const Navbar: React.FC<NavbarProps> = ({ user, onNavigate, onLogout }) => {
                         </div>
                         
                         {/* Mobile Menu Button */}
-                        <div className="lg:hidden">
+                        <div className="lg:hidden flex items-center gap-2">
+                             <button 
+                                onClick={toggleTheme} 
+                                className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-colors"
+                            >
+                                {isDarkMode ? (
+                                    <svg className="w-6 h-6 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clipRule="evenodd" /></svg>
+                                ) : (
+                                    <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" /></svg>
+                                )}
+                            </button>
                             <button onClick={() => setIsMobileMenuOpen(true)} className="p-3 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700">
                                  <svg className="w-6 h-6 text-gray-700 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7" /></svg>
                             </button>

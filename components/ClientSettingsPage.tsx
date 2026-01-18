@@ -16,8 +16,16 @@ const ClientSettingsPage: React.FC<ClientSettingsPageProps> = ({ user }) => {
     const [email, setEmail] = useState(user.email);
     const [phone, setPhone] = useState(user.phone);
     const [city, setCity] = useState(user.city);
+    
+    // Address State
+    const [street, setStreet] = useState(user.street || '');
+    const [addressNumber, setAddressNumber] = useState(user.addressNumber || '');
+    const [neighborhood, setNeighborhood] = useState(user.neighborhood || '');
+    const [state, setState] = useState(user.state || '');
+    const [zipCode, setZipCode] = useState(user.zipCode || '');
 
     // Password State
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmNewPassword, setConfirmNewPassword] = useState('');
@@ -26,7 +34,17 @@ const ClientSettingsPage: React.FC<ClientSettingsPageProps> = ({ user }) => {
     const [prefs, setPrefs] = useState(user.notificationPreferences);
 
     const handleProfileSave = () => {
-        updateClientDetails(user.id, { name, email, phone, city });
+        updateClientDetails(user.id, { 
+            name, 
+            email, 
+            phone, 
+            city,
+            street,
+            addressNumber,
+            neighborhood,
+            state,
+            zipCode
+        });
     };
 
     const handleNotificationsSave = () => {
@@ -55,8 +73,23 @@ const ClientSettingsPage: React.FC<ClientSettingsPageProps> = ({ user }) => {
     const handlePhotoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (file && file.type.startsWith('image/')) {
-            const newPhotoUrl = URL.createObjectURL(file);
-            updateUserPhoto(user.id, newPhotoUrl);
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const MAX_WIDTH = 300;
+                    const scale = MAX_WIDTH / img.width;
+                    canvas.width = MAX_WIDTH;
+                    canvas.height = img.height * scale;
+                    const ctx = canvas.getContext('2d');
+                    ctx?.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    const resizedDataUrl = canvas.toDataURL('image/jpeg', 0.7);
+                    updateUserPhoto(user.id, resizedDataUrl);
+                };
+                img.src = e.target?.result as string;
+            };
+            reader.readAsDataURL(file);
         } else if (file) {
             addAlert('Por favor, selecione um arquivo de imagem válido.', 'error');
         }
@@ -91,11 +124,38 @@ const ClientSettingsPage: React.FC<ClientSettingsPageProps> = ({ user }) => {
                         <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Telefone</label>
                         <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} className="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-600 rounded-lg dark:bg-gray-700" />
                     </div>
-                     <div>
-                        <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Cidade</label>
-                        <input type="text" value={city} onChange={e => setCity(e.target.value)} className="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-600 rounded-lg dark:bg-gray-700" />
+                </div>
+
+                <div className="mt-8 pt-8 border-t border-gray-100 dark:border-gray-700">
+                    <h4 className="text-xl font-bold text-gray-800 dark:text-white mb-6">Endereço Completo</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                        <div className="md:col-span-1">
+                            <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">CEP</label>
+                            <input type="text" value={zipCode} onChange={e => setZipCode(e.target.value)} placeholder="00000-000" className="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-600 rounded-lg dark:bg-gray-700" />
+                        </div>
+                        <div className="md:col-span-3">
+                            <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Rua / Avenida</label>
+                            <input type="text" value={street} onChange={e => setStreet(e.target.value)} className="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-600 rounded-lg dark:bg-gray-700" />
+                        </div>
+                        <div className="md:col-span-1">
+                            <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Número</label>
+                            <input type="text" value={addressNumber} onChange={e => setAddressNumber(e.target.value)} className="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-600 rounded-lg dark:bg-gray-700" />
+                        </div>
+                        <div className="md:col-span-1">
+                            <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Bairro</label>
+                            <input type="text" value={neighborhood} onChange={e => setNeighborhood(e.target.value)} className="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-600 rounded-lg dark:bg-gray-700" />
+                        </div>
+                        <div className="md:col-span-1">
+                            <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Cidade</label>
+                            <input type="text" value={city} onChange={e => setCity(e.target.value)} className="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-600 rounded-lg dark:bg-gray-700" />
+                        </div>
+                        <div className="md:col-span-1">
+                            <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Estado</label>
+                            <input type="text" value={state} onChange={e => setState(e.target.value)} className="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-600 rounded-lg dark:bg-gray-700" placeholder="UF" maxLength={2} />
+                        </div>
                     </div>
                 </div>
+
                 <div className="flex justify-end mt-8">
                     <button onClick={handleProfileSave} className="px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition-colors">Salvar Alterações do Perfil</button>
                 </div>

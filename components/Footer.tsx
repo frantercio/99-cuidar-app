@@ -20,11 +20,15 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
                     <div>
                         <div className="flex items-center space-x-4 mb-8">
-                            <div className="w-14 h-14 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg text-2xl">
-                                {systemSettings.logo.startsWith('http') ? 
-                                    <img src={systemSettings.logo} alt="Logo" className="w-full h-full object-cover rounded-2xl"/> : 
-                                    <span role="img" aria-label="Logo">{systemSettings.logo}</span>
-                                }
+                            <div className="relative w-14 h-14 rounded-xl bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 shadow-lg flex items-center justify-center overflow-hidden">
+                                <svg className="w-8 h-8 text-white drop-shadow-md z-10" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
+                                </svg>
+                                {/* Medical Cross Overlay Effect */}
+                                <div className="absolute inset-0 flex items-center justify-center opacity-20 text-white">
+                                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="4"><path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
+                                </div>
+                                <div className="absolute top-0 -left-[100%] w-full h-full bg-gradient-to-r from-transparent via-white/30 to-transparent transform skew-x-12 animate-pulse-soft"></div>
                             </div>
                             <div>
                                 <h3 className="text-2xl font-bold">{systemSettings.appName}</h3>
@@ -47,6 +51,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                     <div>
                         <h4 className="text-xl font-bold mb-8 text-green-300">Para Famílias</h4>
                         <ul className="space-y-4 text-gray-300">
+                            <li><button onClick={() => onNavigate('systemInfo')} className="hover:text-white transition-colors hover:translate-x-2 inline-block transform">ℹ️ Sobre o Sistema</button></li>
                             <li><button onClick={() => onNavigate('findCaregiversGuide')} className="hover:text-white transition-colors hover:translate-x-2 inline-block transform">🔍 Encontrar Cuidadores</button></li>
                             <li><button onClick={() => onNavigate('howToChoose')} className="hover:text-white transition-colors hover:translate-x-2 inline-block transform">✅ Como Escolher</button></li>
                             <li><button onClick={() => onNavigate('security')} className="hover:text-white transition-colors hover:translate-x-2 inline-block transform">🛡️ Segurança Total</button></li>

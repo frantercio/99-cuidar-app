@@ -56,7 +56,7 @@ export const sampleReviews: { [key: number]: Review[] } = {
 
 const caregiversList: Omit<Caregiver, 'role' | 'notificationPreferences' | 'status' | 'appointments' | 'wallet'>[] = [
     {
-        id: 1, name: "Netha Pereira", email: "netha@99cuidar.com", city: "São Luís, MA", experience: "10+", specializations: ["alzheimer", "diabetes"], certifications: ["Primeiros Socorros", "Gerontologia"], availability: "today", rating: 4.9, reviewsCount: 47, reviews: sampleReviews[1] || [], bio: "Cuidadora especializada com mais de 12 anos de experiência em cuidados com idosos. Formada em técnico de enfermagem e especializada em Alzheimer. Minha abordagem é centrada no paciente, buscando sempre oferecer não apenas o cuidado técnico necessário, mas também conforto, dignidade e companhia.", phone: "(98) 98887-9009", services: defaultServices, photo: "👩‍⚕️", cover: { type: 'gradient', value: 'bg-gradient-to-br from-indigo-200 via-purple-200 to-pink-200' }, verified: true, online: true, responseTime: "15 min", completedJobs: 280, unavailableDates: [new Date(new Date().setDate(new Date().getDate() + 10)).toISOString().split('T')[0]], security: { backgroundCheck: 'completed', idVerification: 'completed', insurance: true, insurancePolicy: 'AP-123456789' }, socialMedia: { instagram: '#', facebook: '#', linkedin: '#', whatsapp: '#', },
+        id: 1, name: "Netha Pereira", email: "netha@99cuidar.com", city: "São Luís, MA", street: "Av. dos Holandeses", addressNumber: "1000", neighborhood: "Calhau", state: "MA", zipCode: "65071-380", experience: "10+", specializations: ["alzheimer", "diabetes"], certifications: ["Primeiros Socorros", "Gerontologia"], availability: "today", rating: 4.9, reviewsCount: 47, reviews: sampleReviews[1] || [], bio: "Cuidadora especializada com mais de 12 anos de experiência em cuidados com idosos. Formada em técnico de enfermagem e especializada em Alzheimer. Minha abordagem é centrada no paciente, buscando sempre oferecer não apenas o cuidado técnico necessário, mas também conforto, dignidade e companhia.", phone: "(98) 98887-9009", services: defaultServices, photo: "👩‍⚕️", cover: { type: 'gradient', value: 'bg-gradient-to-br from-indigo-200 via-purple-200 to-pink-200' }, verified: true, online: true, responseTime: "15 min", completedJobs: 280, unavailableDates: [new Date(new Date().setDate(new Date().getDate() + 10)).toISOString().split('T')[0]], security: { backgroundCheck: 'completed', idVerification: 'completed', insurance: true, insurancePolicy: 'AP-123456789' }, socialMedia: { instagram: '#', facebook: '#', linkedin: '#', whatsapp: '#', },
     },
     {
         id: 2, name: "João Silva", email: "joao.silva@example.com", city: "Rio Branco, AC", experience: "3-5", specializations: ["parkinson", "mobilidade-reduzida"], certifications: ["Cuidador de Idosos"], availability: "this_week", rating: 4.8, reviewsCount: 15, reviews: [], bio: "Cuidador dedicado com 4 anos de experiência, focado em promover a independência e o bem-estar dos idosos. Paciente e atencioso.", phone: "(68) 91234-5678", services: defaultServices, photo: "👨‍⚕️", cover: { type: 'gradient', value: 'bg-gradient-to-br from-green-200 to-teal-200' }, verified: true, online: false, responseTime: "1 hora", completedJobs: 50, security: { backgroundCheck: 'completed', idVerification: 'pending', insurance: true },
@@ -157,11 +157,41 @@ export const initialCaregivers: Caregiver[] = caregiversList.map(c => ({
 }) as Caregiver);
 
 export const sampleAppointments: Appointment[] = [
-    { id: 'appt-1', caregiverId: 1, caregiverName: "Netha Pereira", caregiverPhoto: "👩‍⚕️", clientId: 999, clientName: 'Carlos Andrade', clientCity: "São Luís, MA", clientPhone: "(98) 91234-5678", date: new Date().toISOString().split('T')[0], time: '09:00 - 17:00', serviceType: 'Diário', status: 'confirmed', cost: 180, paymentStatus: 'paid', paymentMethod: 'credit_card', platformFee: 27, caregiverEarnings: 153, clientCoordinates: { lat: -2.53073, lng: -44.3068 } },
-    { id: 'appt-2', caregiverId: 13, caregiverName: "Carla Dias", caregiverPhoto: "👩‍⚕️", clientId: 999, clientName: 'Carlos Andrade', clientCity: "São Luís, MA", clientPhone: "(98) 91234-5678", date: new Date(new Date().setDate(new Date().getDate() + 5)).toISOString().split('T')[0], time: '19:00 - 07:00', serviceType: 'Noturno', status: 'confirmed', cost: 200, paymentStatus: 'paid', paymentMethod: 'pix', platformFee: 30, caregiverEarnings: 170, clientCoordinates: { lat: -2.53073, lng: -44.3068 } },
-    { id: 'appt-3', caregiverId: 1, caregiverName: "Netha Pereira", caregiverPhoto: "👩‍⚕️", clientId: 999, clientName: 'Carlos Andrade', clientCity: "São Luís, MA", clientPhone: "(98) 91234-5678", date: new Date(new Date().setDate(new Date().getDate() - 3)).toISOString().split('T')[0], time: '08:00 - 18:00', serviceType: 'Diário', status: 'completed', cost: 180, reviewed: false, paymentStatus: 'paid', paymentMethod: 'credit_card', platformFee: 27, caregiverEarnings: 153, clientCoordinates: { lat: -2.53073, lng: -44.3068 } },
-    { id: 'appt-4', caregiverId: 25, caregiverName: "Mariana Teixeira", caregiverPhoto: "👩‍🏫", clientId: 999, clientName: 'Carlos Andrade', clientCity: "São Luís, MA", clientPhone: "(98) 91234-5678", date: new Date(new Date().setDate(new Date().getDate() + 3)).toISOString().split('T')[0], time: '08:00 - 18:00', serviceType: '24h', status: 'confirmed', cost: 350, paymentStatus: 'paid', paymentMethod: 'credit_card', platformFee: 52.5, caregiverEarnings: 297.5, clientCoordinates: { lat: -2.53073, lng: -44.3068 } },
-    { id: 'appt-5', caregiverId: 25, caregiverName: "Mariana Teixeira", caregiverPhoto: "👩‍🏫", clientId: 999, clientName: 'Carlos Andrade', clientCity: "São Luís, MA", clientPhone: "(98) 91234-5678", date: new Date(new Date().setDate(new Date().getDate() - 5)).toISOString().split('T')[0], time: '08:00 - 18:00', serviceType: 'Diário', status: 'completed', cost: 180, reviewed: true, paymentStatus: 'paid', paymentMethod: 'pix', platformFee: 27, caregiverEarnings: 153, clientCoordinates: { lat: -2.53073, lng: -44.3068 } },
+    { 
+        id: 'appt-1', 
+        caregiverId: 1, caregiverName: "Netha Pereira", caregiverPhoto: "👩‍⚕️", 
+        clientId: 999, clientName: 'Carlos Andrade', clientCity: "São Luís, MA", clientPhone: "(98) 91234-5678", 
+        clientStreet: "Rua das Flores", clientAddressNumber: "123", clientNeighborhood: "Centro", clientState: "MA",
+        date: new Date().toISOString().split('T')[0], time: '09:00 - 17:00', serviceType: 'Diário', status: 'confirmed', cost: 180, paymentStatus: 'paid', paymentMethod: 'credit_card', platformFee: 27, caregiverEarnings: 153, clientCoordinates: { lat: -2.53073, lng: -44.3068 } 
+    },
+    { 
+        id: 'appt-2', 
+        caregiverId: 13, caregiverName: "Carla Dias", caregiverPhoto: "👩‍⚕️", 
+        clientId: 999, clientName: 'Carlos Andrade', clientCity: "São Luís, MA", clientPhone: "(98) 91234-5678",
+        clientStreet: "Rua das Flores", clientAddressNumber: "123", clientNeighborhood: "Centro", clientState: "MA",
+        date: new Date(new Date().setDate(new Date().getDate() + 5)).toISOString().split('T')[0], time: '19:00 - 07:00', serviceType: 'Noturno', status: 'confirmed', cost: 200, paymentStatus: 'paid', paymentMethod: 'pix', platformFee: 30, caregiverEarnings: 170, clientCoordinates: { lat: -2.53073, lng: -44.3068 } 
+    },
+    { 
+        id: 'appt-3', 
+        caregiverId: 1, caregiverName: "Netha Pereira", caregiverPhoto: "👩‍⚕️", 
+        clientId: 999, clientName: 'Carlos Andrade', clientCity: "São Luís, MA", clientPhone: "(98) 91234-5678",
+        clientStreet: "Rua das Flores", clientAddressNumber: "123", clientNeighborhood: "Centro", clientState: "MA",
+        date: new Date(new Date().setDate(new Date().getDate() - 3)).toISOString().split('T')[0], time: '08:00 - 18:00', serviceType: 'Diário', status: 'completed', cost: 180, reviewed: false, paymentStatus: 'paid', paymentMethod: 'credit_card', platformFee: 27, caregiverEarnings: 153, clientCoordinates: { lat: -2.53073, lng: -44.3068 } 
+    },
+    { 
+        id: 'appt-4', 
+        caregiverId: 25, caregiverName: "Mariana Teixeira", caregiverPhoto: "👩‍🏫", 
+        clientId: 999, clientName: 'Carlos Andrade', clientCity: "São Luís, MA", clientPhone: "(98) 91234-5678",
+        clientStreet: "Rua das Flores", clientAddressNumber: "123", clientNeighborhood: "Centro", clientState: "MA",
+        date: new Date(new Date().setDate(new Date().getDate() + 3)).toISOString().split('T')[0], time: '08:00 - 18:00', serviceType: '24h', status: 'confirmed', cost: 350, paymentStatus: 'paid', paymentMethod: 'credit_card', platformFee: 52.5, caregiverEarnings: 297.5, clientCoordinates: { lat: -2.53073, lng: -44.3068 } 
+    },
+    { 
+        id: 'appt-5', 
+        caregiverId: 25, caregiverName: "Mariana Teixeira", caregiverPhoto: "👩‍🏫", 
+        clientId: 999, clientName: 'Carlos Andrade', clientCity: "São Luís, MA", clientPhone: "(98) 91234-5678",
+        clientStreet: "Rua das Flores", clientAddressNumber: "123", clientNeighborhood: "Centro", clientState: "MA",
+        date: new Date(new Date().setDate(new Date().getDate() - 5)).toISOString().split('T')[0], time: '08:00 - 18:00', serviceType: 'Diário', status: 'completed', cost: 180, reviewed: true, paymentStatus: 'paid', paymentMethod: 'pix', platformFee: 27, caregiverEarnings: 153, clientCoordinates: { lat: -2.53073, lng: -44.3068 } 
+    },
 ];
 
 export const sampleNotifications: Notification[] = [
@@ -196,6 +226,11 @@ export const initialUsers: User[] = [
         password: "password123",
         photo: "👨‍🦰",
         city: "São Luís, MA",
+        street: "Rua das Flores",
+        addressNumber: "123",
+        neighborhood: "Centro",
+        state: "MA",
+        zipCode: "65000-000",
         phone: "(98) 91234-5678",
         notificationPreferences: {
             bookingConfirmations: true,

@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Caregiver } from '../types';
+import { Caregiver, Client } from '../types';
 import Avatar from './Avatar';
 import { useAppStore } from '../store/useAppStore';
 
@@ -66,14 +66,20 @@ const CaregiverCard: React.FC<CaregiverCardProps> = ({ caregiver, onViewProfile,
         return null;
     }
 
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     const [certsExpanded, setCertsExpanded] = useState(false);
-    const { addAlert } = useAppStore();
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const { addAlert, currentUser, toggleFavorite } = useAppStore();
     
     const isHighlighted = caregiver.highlightedUntil && new Date(caregiver.highlightedUntil) > new Date();
+    // Considera "High Match" se a pontuação for maior que 70%
+    const isHighMatch = (matchScore || 0) >= 0.7;
     
     const premiumService = caregiver.services.length > 0
         ? caregiver.services.reduce((max, service) => service.price > max.price ? service : max)
         : null;
+
+    const isFavorite = currentUser?.role === 'client' && (currentUser as Client).favorites?.includes(caregiver.id);
 
     const handleShareClick = (e: React.MouseEvent) => {
         e.stopPropagation();
@@ -86,19 +92,52 @@ const CaregiverCard: React.FC<CaregiverCardProps> = ({ caregiver, onViewProfile,
         });
     };
 
+    const handleFavoriteClick = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (!currentUser) {
+            addAlert('Faça login como cliente para favoritar.', 'info');
+            return;
+        }
+        toggleFavorite(caregiver.id);
+    };
+
     const handleCertsToggle = (e: React.MouseEvent) => {
         e.stopPropagation();
         setCertsExpanded(!certsExpanded);
     };
 
+    const getCoverStyle = () => {
+        const cover = caregiver.cover;
+        if (!cover) return { className: 'bg-gradient-to-r from-blue-100 to-indigo-200 dark:from-blue-900/50 dark:to-indigo-900/50' };
+        
+        if (cover.type === 'gradient') return { className: cover.value };
+        if (cover.type === 'color') return { style: { backgroundColor: cover.value } };
+        if (cover.type === 'image') return { style: { backgroundImage: `url(${cover.value})`, backgroundSize: 'cover', backgroundPosition: 'center' } };
+        
+        return { className: 'bg-gradient-to-r from-blue-100 to-indigo-200 dark:from-blue-900/50 dark:to-indigo-900/50' };
+    };
+
+    const coverStyle = getCoverStyle();
+
     return (
-        <div className={`relative bg-white dark:bg-gray-800 rounded-3xl shadow-lg card-hover overflow-hidden border border-gray-100 dark:border-gray-700/50 group animate-slide-up`}>
+        <div className={`relative bg-white dark:bg-gray-800 rounded-3xl shadow-lg card-hover overflow-hidden border group animate-slide-up transition-all duration-300 
+            ${!isHighlighted && isHighMatch 
+                ? 'border-teal-500/50 dark:border-teal-400/50 ring-1 ring-teal-500/30 shadow-2xl shadow-teal-500/10' 
+                : 'border-gray-100 dark:border-gray-700/50'
+            }
+        `}>
              {isHighlighted && (
                 <div className="absolute inset-0 rounded-3xl border-4 border-yellow-400 animate-pulse z-10 pointer-events-none"></div>
             )}
+            
+            {/* Visual Effect for High AI Match */}
+            {!isHighlighted && isHighMatch && (
+                <div className="absolute inset-0 rounded-3xl border-2 border-teal-400 dark:border-teal-500 animate-pulse z-10 pointer-events-none shadow-[inset_0_0_20px_rgba(45,212,191,0.15)]"></div>
+            )}
+
             <div>
                 <div className="relative">
-                    <div className={`h-48 ${caregiver.cover && caregiver.cover.type === 'gradient' ? caregiver.cover.value : 'bg-gradient-to-r from-blue-100 to-indigo-200 dark:from-blue-900/50 dark:to-indigo-900/50'}`}></div>
+                    <div className={`h-48 ${coverStyle.className || ''}`} style={coverStyle.style}></div>
                     
                     <div className="absolute -bottom-16 left-1/2 -translate-x-1/2 w-32 h-32 animate-scale-in">
                         <div className="w-full h-full bg-gradient-to-r from-green-400 to-blue-500 p-1.5 rounded-3xl shadow-2xl group-hover:rotate-6 transition-transform duration-500">
@@ -113,22 +152,35 @@ const CaregiverCard: React.FC<CaregiverCardProps> = ({ caregiver, onViewProfile,
                         </div>
                     </div>
                     
-                    {caregiver.verified && (
-                        <div className="absolute top-4 right-4 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm px-4 py-2 rounded-full text-xs font-bold text-green-600 dark:text-green-400 flex items-center shadow-md">
-                            <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg>
-                            Verificado Pro
-                        </div>
-                    )}
+                    {/* Favorite Button */}
+                    <div className="absolute top-4 right-4 z-20 flex gap-2">
+                        {caregiver.verified && (
+                            <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm px-4 py-2 rounded-full text-xs font-bold text-green-600 dark:text-green-400 flex items-center shadow-md">
+                                <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg>
+                                Verificado Pro
+                            </div>
+                        )}
+                        <button 
+                            onClick={handleFavoriteClick}
+                            className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm p-2 rounded-full shadow-md transition-transform transform hover:scale-110"
+                            title={isFavorite ? "Remover dos Favoritos" : "Adicionar aos Favoritos"}
+                        >
+                            <svg className={`w-5 h-5 ${isFavorite ? 'text-red-500 fill-current' : 'text-gray-400 dark:text-gray-500'}`} fill={isFavorite ? "currentColor" : "none"} stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                            </svg>
+                        </button>
+                    </div>
+
                     <div className="absolute top-4 left-4 flex flex-col items-start gap-2 z-20">
                          {isHighlighted && (
                             <div className="bg-yellow-400 text-yellow-900 px-3 py-1 text-sm font-bold rounded-full flex items-center shadow-lg">
                                 🌟 Em Destaque
                             </div>
                          )}
-                         {matchScore && matchScore > 0 && (
+                         {(matchScore || 0) > 0 && (
                             <div className="bg-gradient-to-r from-teal-500 via-emerald-500 to-green-500 text-white px-4 py-1.5 text-base font-extrabold rounded-full flex items-center shadow-[0_0_15px_rgba(20,184,166,0.6)] border-2 border-white/30 backdrop-blur-sm animate-pulse transform hover:scale-105 transition-transform" title="Compatibilidade baseada nas suas preferências">
                                 <span className="text-xl mr-1.5">✨</span>
-                                {Math.round(matchScore * 100)}% Match
+                                {Math.round((matchScore || 0) * 100)}% Match
                             </div>
                         )}
                     </div>

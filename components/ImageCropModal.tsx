@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 
 interface ImageCropModalProps {
@@ -72,7 +73,8 @@ const ImageCropModal: React.FC<ImageCropModalProps> = ({ src, onClose, onCropCom
         const ctx = canvas.getContext('2d');
         if (!ctx) return;
         
-        const outputWidth = 800;
+        // Reduced output size to prevent storage quota issues
+        const outputWidth = 500; 
         canvas.width = outputWidth;
         canvas.height = outputWidth / ASPECT_RATIO;
         
@@ -96,7 +98,8 @@ const ImageCropModal: React.FC<ImageCropModalProps> = ({ src, onClose, onCropCom
             canvas.height
         );
 
-        onCropComplete(canvas.toDataURL('image/jpeg'));
+        // Compress image to 0.7 quality
+        onCropComplete(canvas.toDataURL('image/jpeg', 0.7));
     };
     
     return (

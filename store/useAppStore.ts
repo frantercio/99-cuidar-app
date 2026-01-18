@@ -43,6 +43,7 @@ interface AppState {
     changePassword: (userId: number, newPass: string) => Promise<void>;
     highlightProfile: (caregiverId: number) => Promise<void>;
     setVacationMode: (caregiverId: number, active: boolean, returnDate?: string) => Promise<void>;
+    toggleFavorite: (caregiverId: number) => Promise<void>;
 
     addAppointment: (appointment: Omit<Appointment, 'id'>) => Promise<boolean>;
     editAppointment: (appointmentId: string, updates: Partial<Appointment>) => Promise<void>;
@@ -75,6 +76,9 @@ interface AppState {
     // CareLog Actions
     addCareLog: (logData: Omit<CareLog, 'id' | 'timestamp'>) => Promise<void>;
     getCareLog: (appointmentId: string) => Promise<CareLog | null>;
+
+    // Support Ticket Actions
+    createTicket: (ticket: Omit<SupportTicket, 'id'>) => Promise<void>;
 
     // Check-in/out
     performCheckIn: (appointmentId: string, data: AppointmentAction) => Promise<boolean>;
@@ -292,6 +296,41 @@ export const useAppStore = create<AppState>((set, get) => ({
         const updatedUser = await api.updateUser(userId, { password: newPass });
         if (!updatedUser) return;
          get().addAlert('Senha alterada com sucesso!');
+    },
+
+    toggleFavorite: async (caregiverId) => {
+        const currentUser = get().currentUser;
+        if (!currentUser) {
+            get().addAlert('Você precisa estar logado como cliente para favoritar.', 'info');
+            return;
+        }
+        if (currentUser.role !== 'client') {
+            get().addAlert('Apenas clientes podem favoritar cuidadores.', 'info');
+            return;
+        }
+        
+        const client = currentUser as Client;
+        const currentFavorites = client.favorites || [];
+        const isFavorited = currentFavorites.includes(caregiverId);
+        
+        const newFavorites = isFavorited 
+            ? currentFavorites.filter(id => id !== caregiverId)
+            : [...currentFavorites, caregiverId];
+            
+        await api.updateUser(client.id, { favorites: newFavorites } as Partial<Client>);
+        
+        set(state => {
+            // Update current user
+            const updatedCurrentUser = { ...state.currentUser!, favorites: newFavorites } as Client;
+            // Update users list
+            const updatedUsers = state.users.map(u => u.id === client.id ? { ...u, favorites: newFavorites } : u);
+            return {
+                currentUser: updatedCurrentUser,
+                users: updatedUsers
+            };
+        });
+        
+        get().addAlert(isFavorited ? 'Removido dos favoritos.' : 'Adicionado aos favoritos!', 'success');
     },
     
     addAppointment: async (appointmentData) => {
@@ -565,6 +604,21 @@ export const useAppStore = create<AppState>((set, get) => ({
             get().addAlert('Ticket resolvido com sucesso!', 'success');
         } else {
             get().addAlert('Erro ao resolver ticket.', 'error');
+        }
+    },
+
+    createTicket: async (ticket) => {
+        const response = await fetch('/api/tickets', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(ticket)
+        });
+        
+        if (response.ok) {
+            const newTicket = await response.json();
+            set(state => ({
+                tickets: [...state.tickets, newTicket]
+            }));
         }
     },
 

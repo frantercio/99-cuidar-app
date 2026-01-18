@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Appointment } from '../types';
 import { useAppStore } from '../store/useAppStore';
 
@@ -28,11 +28,13 @@ const moodOptions = [
 ];
 
 const CareLogModal: React.FC<CareLogModalProps> = ({ appointment, onClose }) => {
-    const { addCareLog } = useAppStore();
+    const { addCareLog, addAlert } = useAppStore();
     const [mood, setMood] = useState<string>('');
     const [selectedActivities, setSelectedActivities] = useState<string[]>([]);
     const [notes, setNotes] = useState('');
+    const [photos, setPhotos] = useState<string[]>([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     const toggleActivity = (id: string) => {
         setSelectedActivities(prev => 
@@ -40,9 +42,27 @@ const CareLogModal: React.FC<CareLogModalProps> = ({ appointment, onClose }) => 
         );
     };
 
+    const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setPhotos(prev => [...prev, reader.result as string]);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const removePhoto = (index: number) => {
+        setPhotos(prev => prev.filter((_, i) => i !== index));
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!mood) return;
+        if (!mood) {
+            addAlert('Por favor, selecione o estado emocional do paciente.', 'error');
+            return;
+        }
 
         setIsSubmitting(true);
         await addCareLog({
@@ -50,7 +70,8 @@ const CareLogModal: React.FC<CareLogModalProps> = ({ appointment, onClose }) => 
             date: new Date().toISOString(),
             mood: mood as any,
             activities: selectedActivities,
-            notes
+            notes,
+            photos // Pass photos to store
         });
         setIsSubmitting(false);
         onClose();
@@ -69,7 +90,7 @@ const CareLogModal: React.FC<CareLogModalProps> = ({ appointment, onClose }) => 
                     </button>
                 </div>
 
-                <div className="p-8 overflow-y-auto flex-grow">
+                <div className="p-8 overflow-y-auto flex-grow custom-scrollbar">
                     <form onSubmit={handleSubmit} className="space-y-8">
                         {/* Mood Selection */}
                         <div>
@@ -110,13 +131,48 @@ const CareLogModal: React.FC<CareLogModalProps> = ({ appointment, onClose }) => 
                             </div>
                         </div>
 
+                        {/* Photo Evidence */}
+                        <div>
+                            <label className="block text-lg font-bold text-gray-800 dark:text-white mb-4">Fotos / Evidências</label>
+                            <div className="grid grid-cols-3 gap-3">
+                                {photos.map((photo, index) => (
+                                    <div key={index} className="relative aspect-square rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 group">
+                                        <img src={photo} alt={`Evidence ${index}`} className="w-full h-full object-cover" />
+                                        <button 
+                                            type="button"
+                                            onClick={() => removePhoto(index)}
+                                            className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                                        >
+                                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                        </button>
+                                    </div>
+                                ))}
+                                <button 
+                                    type="button"
+                                    onClick={() => fileInputRef.current?.click()}
+                                    className="aspect-square rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600 flex flex-col items-center justify-center text-gray-500 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+                                >
+                                    <svg className="w-8 h-8 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
+                                    <span className="text-xs">Adicionar</span>
+                                </button>
+                                <input 
+                                    type="file" 
+                                    ref={fileInputRef} 
+                                    className="hidden" 
+                                    accept="image/*"
+                                    onChange={handlePhotoUpload}
+                                />
+                            </div>
+                            <p className="text-xs text-gray-500 mt-2">Adicione fotos de refeições, medicamentos ou atividades.</p>
+                        </div>
+
                         {/* Notes */}
                         <div>
                             <label className="block text-lg font-bold text-gray-800 dark:text-white mb-2">Observações Adicionais</label>
                             <textarea
                                 value={notes}
                                 onChange={(e) => setNotes(e.target.value)}
-                                rows={4}
+                                rows={3}
                                 className="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-600 rounded-xl dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                                 placeholder="Alguma intercorrência? Algum detalhe importante sobre o dia?"
                             />

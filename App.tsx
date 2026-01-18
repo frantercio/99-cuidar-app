@@ -23,6 +23,7 @@ import SecurityPage from './components/SecurityPage';
 import HowItWorksPage from './components/HowItWorksPage';
 import TrainingPage from './components/TrainingPage';
 import InstallPrompt from './components/InstallPrompt';
+import SystemInfoPage from './components/SystemInfoPage';
 
 
 const App: React.FC = () => {
@@ -75,9 +76,11 @@ const App: React.FC = () => {
     const renderPage = () => {
         switch (page) {
             case 'home':
-                return <HomePage onNavigate={navigate} />;
+                return <MarketplacePage />; // Home agora carrega os Cuidadores diretamente
             case 'marketplace':
                 return <MarketplacePage />;
+            case 'systemInfo':
+                return <SystemInfoPage />;
             case 'publicProfile':
                 if (!viewingCaregiver) {
                     navigate('marketplace');
@@ -89,7 +92,7 @@ const App: React.FC = () => {
                 if (currentUser.role === 'caregiver') return <DashboardPage />;
                 if (currentUser.role === 'client') return <ClientDashboardPage />;
                 if (currentUser.role === 'admin') return <AdminDashboardPage />;
-                return <HomePage onNavigate={navigate} />; // Fallback
+                return <MarketplacePage />; // Fallback to marketplace
             case 'login':
                 return <LoginPage />;
             case 'register':
@@ -107,11 +110,11 @@ const App: React.FC = () => {
             case 'security':
                 return <SecurityPage />;
             case 'howItWorks':
-                return <HowItWorksPage />;
+                return <HowItWorksPage />; // Página "Como funciona para Cuidadores"
             case 'training':
                 return <TrainingPage />;
             default:
-                return <HomePage onNavigate={navigate} />;
+                return <MarketplacePage />;
         }
     };
 

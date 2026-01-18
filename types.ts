@@ -49,6 +49,10 @@ export interface Appointment {
     clientName: string;
     clientPhone?: string;
     clientCity?: string;
+    clientStreet?: string;
+    clientAddressNumber?: string;
+    clientNeighborhood?: string;
+    clientState?: string;
     clientCoordinates?: { // Target location for validation
         lat: number;
         lng: number;
@@ -137,6 +141,11 @@ interface BaseUser {
 export interface Caregiver extends BaseUser {
     role: 'caregiver';
     city: string;
+    street?: string;
+    addressNumber?: string;
+    neighborhood?: string;
+    state?: string;
+    zipCode?: string;
     experience: string;
     specializations: string[];
     certifications: string[];
@@ -190,7 +199,13 @@ export interface Client extends BaseUser {
     role: 'client';
     city: string;
     phone: string;
+    street?: string;
+    addressNumber?: string;
+    neighborhood?: string;
+    state?: string;
+    zipCode?: string;
     appointments?: Appointment[];
+    favorites?: number[]; // List of favorite caregiver IDs
     notificationPreferences: {
         bookingConfirmations: boolean;
         newMessages: boolean;
@@ -242,6 +257,7 @@ export interface Conversation {
 export type Page = 
     'home' | 
     'marketplace' | 
+    'systemInfo' |
     'publicProfile' | 
     'login' | 
     'register' | 
